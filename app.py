@@ -66,17 +66,12 @@ def stations():
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    last_year = dt.date(2017,8,23)-dt.timedelta(days=365)
 
-# Perform a query to retrieve the data and precipitation scores
-    results = session.query(measurement.date,measurement.prcp).filter(measurement.date>=last_year).all()
+    session.query(measurement.station,func.count(measurement.station)).group_by(measurement.station).order_by(func.count(measurement.station).desc()).all()).all()
     
     session.close()
 
-    # Convert list of tuples into normal list
-    all_prcp = list(np.ravel(results))
-
-    return jsonify(all_prcp)
+    return jsonify(all_stations)
 
 
 if __name__ == '__main__':
